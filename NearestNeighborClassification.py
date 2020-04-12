@@ -63,7 +63,10 @@ def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification
     plt.plot([newhemoglobin], [newglucose], marker = "o", markersize = 6, color = "limegreen")
     plt.show
 
-
+def nearestNeighborClassifier(newglucose, newhemoglobin, glucose, hemoglobin, classification):
+    distances = calculateDistanceArray()
+    smallestDistance = np.argmin(distances)
+    return(classification(smallestDistance))
 
 # MAIN SCRIPT
     
