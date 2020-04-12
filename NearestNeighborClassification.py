@@ -43,15 +43,19 @@ def Distance(newhemoglobin, hemoglobin, newglucose, glucose):
     dist = math.sqrt(((newhemoglobin-hemoglobin)**2)+(newglucose-glucose)**2)
     return dist
 
-def calculateDistanceArray():
-    n = 0
-    DistanceArray = []
-    for i in classification:
-        g = glucose[n]
-        h = hemoglobin[n]
-        DistanceArray.append(Distance(newhemoglobin, h, newglucose, g))
-        n += 1
-    return DistanceArray
+#def calculateDistanceArray(newglucose, glucose, newhemoglobin, hemoglobin):
+#    n = 0
+#    DistanceArray = []
+#    for i in classification:
+#        g = glucose[n]
+#        h = hemoglobin[n]
+#        DistanceArray.append(Distance(newhemoglobin, h, newglucose, g))
+#        n += 1
+#    return DistanceArray
+
+def calculateDistanceArray(newglucose, glucose, newhemoglobin, hemoglobin):
+    dist = np.sqrt(((newhemoglobin - hemoglobin)**2) + (newglucose - glucose)**2)
+    return dist
 
 def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification):
     plt.figure()
@@ -67,6 +71,25 @@ def nearestNeighborClassifier(newglucose, newhemoglobin, glucose, hemoglobin, cl
     distances = calculateDistanceArray()
     smallestDistance = np.argmin(distances)
     return(classification(smallestDistance))
+    
+def kNearestNeighborClassifier(k, newglucose, newhemoglobin, glucose, hemoglobin, classification):
+    zeros = 0
+    ones = 0
+    classMajority = 0
+    sorted_indices = np.argsort(distance)
+    k_indices = sorted_indices[:k]
+    k_classifications = classification[k_indices]
+    for i in k_classifications:
+        if i == 0:
+            zeros = 1 + zeros
+        if i == 1:
+            ones = 1 + ones
+    if ones > zeros:
+        classMajority = 1.0
+    else:
+        classMajority = 0.0
+    return k_classifications, classMajority
+    
 
 # MAIN SCRIPT
     
@@ -74,5 +97,6 @@ glucose, hemoglobin, classification = openckdfile()
 glucose, hemoglobin, classification = normalizeData(glucose, hemoglobin, classification)
 newpoint = ()
 newglucose, newhemoglobin = createTestCase()
+distance = calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin)
 graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification)
 
