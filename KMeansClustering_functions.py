@@ -1,9 +1,16 @@
 #Please place your FUNCTION code for step 4 here.
 
+
+    
+   
+  #Name: Sara Morrison
+
+#IMPORT STATEMENTS
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+#FUNCTIONS
 
 def openckdfile():
     glucose, hemoglobin, classification = np.loadtxt('ckd.csv', delimiter=',', skiprows=1, unpack=True)
@@ -25,53 +32,45 @@ def Distance(newhemoglobin, hemoglobin, newglucose, glucose):
     return dist
 
 def Start(k):
-    glucose, hemoglobin, classification = openckdfile()
-    glucose, hemoglobin, classification = normalizeData(glucose, hemoglobin, classification)
-    centroids = array = np.random.random((k, 2))
-    return centroids
+    random_centroids = np.random.random((k, 2))
+    return random_centroids
 
-def Assignments(k, centroid):
-    glucose, hemoglobin, classification = openckdfile()
-    glucose, hemoglobin, classification = normalizeData(glucose, hemoglobin, classification)
-    distance = np.zeros((len(glucose), k))
-    for i in range(k):
-        distance1 = np.array(Distance(centroid[i, 1], hemoglobin, centroid[i, 0], glucose))
-        distance[:, i] = distance1
-    assignment = np.zeros(len(glucose))
-    for i in range(len(glucose)):
-        min = np.argmin(distance[i])
-        assignment[i] = min
-    assignment = np.argmin(distance, axis = 0)
-    return assignment
+def Assignments(random_centroids, glucose, hemoglobin):
+    s = random_centroids.shape[0]
+    distance = np.zeros((s, (158)))
+    assigned_centroids = np.zeros(158)
+    for i in range(s):
+        h = random_centroids[i, 0]
+        g = random_centroids[i, 1]
+        distance[i]=(Distance(h, hemoglobin, g, glucose))
+    assigned_centroids = np.argmin(distance, axis = 0)
+    return assigned_centroids, distance
 
-def Update(k, assignment):
-    glucose, hemoglobin, classification = openckdfile()
-    glucose, hemoglobin, classification = normalizeData(glucose, hemoglobin, classification)
+def Update(k, assigned_centroids, glucose, hemoglobin):
     newcentroid = np.zeros((k, 2))
-    for x in range(k):
-        glucose_centroid = np.zeros((1))
-        hemo_centroid = np.zeros((1))
-        assign_centroid, = np.where(assignment == x)
-        for i in assign_centroid:
-            glucose_centroid = np.append(glucose_centroid, [glucose[i]])
-            hemo_centroid = np.append(hemo_centroid, [hemoglobin[i]])
-        newcentroid[x:, 1] = np.average(glucose_centroid)
-        newcentroid[x:, 0] = np.average(hemo_centroid)
+    hemo_centroid = np.zeros((1))
+    glucose_centroid = np.zeros((1))
+    for i in range(newcentroid.shape[0]):
+        hemo_centroid = np.average(hemoglobin[assigned_centroids == i])
+        glucose_centroid = np.average(glucose[assigned_centroids == i])
+        newcentroid[i] = np.append(hemo_centroid, glucose_centroid)
     return newcentroid
 
 def Iterate(k, number_of_runs):
-    centroid = Start(k)
+    glucose, hemoglobin, classification = openckdfile()
+    glucose, hemoglobin, classification = normalizeData(glucose, hemoglobin, classification)
+    newcentroid = Start(k)
     for i in range(number_of_runs):
-        assignment = Assignments(k, centroid)
-        centroid = Update(k, assignment)
-    return assignment, centroid
+        assigned_centroids, distance = Assignments(newcentroid, glucose, hemoglobin)
+        newcentroid = Update(k, assigned_centroids, glucose, hemoglobin)
+    return assigned_centroids, newcentroid, glucose, hemoglobin, classification
     
-def graphingKMeans(glucose, hemoglobin, assignment, centroids):
+def graphingKMeans(glucose, hemoglobin, assigned_centroids, newcentroid):
     plt.figure()
-    for i in range(int(np.amax(assignment))+1):
+    for i in range(assigned_centroids.max()+1):
         rcolor = np.random.rand(3,)
-        plt.plot(hemoglobin[assignment==i],glucose[assignment==i], ".", label = "Class " + str(i), color = rcolor)
-        plt.plot(centroids[i, 0], centroids[i, 1], "D", label = "Centroid " + str(i), color = rcolor)
+        plt.plot(hemoglobin[assigned_centroids==i],glucose[assigned_centroids==i], ".", label = "Class " + str(i), color = rcolor)
+        plt.plot(newcentroid[i, 0], newcentroid[i, 1], "D", label = "Centroid " + str(i), color = rcolor)
     plt.xlabel("Hemoglobin")
     plt.ylabel("Glucose")
     plt.legend()
