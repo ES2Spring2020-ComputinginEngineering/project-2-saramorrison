@@ -21,7 +21,7 @@ This file contains functions that create centroids for data points and updates t
 Functions within:
 openckdfile is the same as above.
 normalizeData is the same as above.
-Distance is the same as above
+Distance is the same as above.
 Start creates k number of random centroids.
 Assignments assigns each data point in the original data point to its nearest centroid.
 Update uses the assigned centroids to find an average location and updates the centroid to the average location and returns newcentroids.
