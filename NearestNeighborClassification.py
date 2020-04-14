@@ -1,6 +1,9 @@
-#Please put your code for Step 2 and Step 3 in this file.
+#File Name: Nearest Neighbor Classification
+
+#This file graphs hemoglobin and glucose data. It also creates a test case and classifies it based on its nearest neighbor and its k number of nearest neighbors.
 
 #Name: Sara Morrison
+#Estimated Time on this file: 3 hours
 
 # IMPORT STATEMENTS
 
