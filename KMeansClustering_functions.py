@@ -36,8 +36,8 @@ def normalizeData(glucose, hemoglobin, classification):
 """This function calculates the distance from the new test case with the random hemoglobin and glucose values and the original data points.
 It takes four arguments: newhemoglobin, hemoglobin, newglucose, and glucose.
 It returns dist"""
-def Distance(newhemoglobin, hemoglobin, newglucose, glucose):
-    dist = np.sqrt(((newhemoglobin - hemoglobin)**2)+(newglucose - glucose)**2)
+def Distance(h_centroid, hemoglobin, g_centroid, glucose):
+    dist = np.sqrt(((h_centroid - hemoglobin)**2)+(g_centroid - glucose)**2)
     return dist
 
 """This function creates k number of random centroids.
